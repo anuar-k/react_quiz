@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, Fragment} from "react";
 import classes from './Drawer.module.css'
 import Backdrop from "../../UI/Backdrop/Backdrop";
 import {NavLink} from "react-router-dom";
@@ -39,14 +39,14 @@ class Drawer extends Component {
             cls.push(classes.close)
         }
         return (
-            <React.Fragment>
+            <Fragment>
                 <nav className={cls.join(' ')}>
                     <ul>
                         {this.renderLinks()}
                     </ul>
                 </nav>
                 {this.props.isOpen ? <Backdrop onClick={this.props.onClose}/> : null}
-            </React.Fragment>
+            </Fragment>
         )
     }
 }

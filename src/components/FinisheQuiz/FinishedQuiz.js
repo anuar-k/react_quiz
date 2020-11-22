@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom'
 
 const FinishedQuiz = (props) => {
     //Считаем количество правильных ответов
+    console.log('props finish' ,props.results)
     const SuccessCount = Object.keys(props.results).reduce((total, key) => {
         if (props.results[key] === 'success') {
             total++
@@ -13,7 +14,6 @@ const FinishedQuiz = (props) => {
     }, 0)
 
     return (
-
         <div className={classes.FinishedQuiz}>
             <h1>Finished</h1>
             <ul>
@@ -43,4 +43,5 @@ const FinishedQuiz = (props) => {
         </div>
     )
 }
+
 export default FinishedQuiz
