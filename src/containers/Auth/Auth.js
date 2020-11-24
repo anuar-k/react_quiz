@@ -3,9 +3,12 @@ import classes from './Auth.module.css'
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import is from 'is_js'
+import {connect} from "react-redux";
+import {auth} from "../../store/actions/auth";
 
 class Auth extends Component {
     state = {
+        isFormValid: false,
         formControls: {
             email: {
                 value: '',
@@ -35,6 +38,9 @@ class Auth extends Component {
     }
 
     loginHandler = () => {
+        this.props.auth(this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false)
 
     }
 
@@ -43,7 +49,9 @@ class Auth extends Component {
     }
 
     registerHandler = () => {
-
+        this.props.auth(this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            true)
     }
 
     onChangeHandler = (event, controlName) => {
@@ -52,8 +60,17 @@ class Auth extends Component {
         control.value = event.target.value
         control.touched = true
         control.valid = this.validateControl(control.value, control.validation)
+
         formControls[controlName] = control
-        this.setState({formControls})
+
+        let isFormValid = true
+
+        Object.keys(formControls).forEach(name => {
+            isFormValid = formControls[name].valid && isFormValid
+        })
+
+        this.setState(
+            {formControls, isFormValid})
     }
 
     validateControl(value, validation) {
@@ -102,8 +119,18 @@ class Auth extends Component {
                     <h1>Авторизация</h1>
                     <form onSubmit={this.submitHandler} className={classes.AuthForm}>
                         {this.renderInputs()}
-                        <Button type="success" onClick={this.loginHandler}> Войти</Button>
-                        <Button type="primary" onClick={this.registerHandler}> Зарегистрироваться</Button>
+                        <Button
+                            type="success"
+                            onClick={this.loginHandler}
+                            disabled={!this.state.isFormValid}
+                        > Войти
+                        </Button>
+                        <Button
+                            type="primary"
+                            onClick={this.registerHandler}
+                            disabled={!this.state.isFormValid}
+                        > Зарегистрироваться
+                        </Button>
                     </form>
                 </div>
             </div>
@@ -111,4 +138,10 @@ class Auth extends Component {
     }
 }
 
-export default Auth;
+function mapDispatchToProps(dispatch) {
+    return {
+        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Auth)

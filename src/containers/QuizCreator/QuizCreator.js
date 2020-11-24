@@ -5,7 +5,6 @@ import {createControl, validate, validateForm} from '../../form/formFramework'
 import Input from "../../components/UI/Input/Input";
 import Select from "../../components/UI/Select/Select";
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
-import axios from '../../axios/axios-quiz'
 import {connect} from "react-redux";
 import {createQuizQuestion, finishCreateQuiz} from "../../store/actions/create";
 
@@ -45,6 +44,7 @@ class QuizCreator extends Component {
     addQuestionHandler = (event) => {
         event.preventDefault()
         const {question, option1, option2, option3, option4} = this.state.formControls
+        //шаблон вопроса
         const questionItem = {
             question: question.value,
             id: this.props.quiz.length + 1,
@@ -62,23 +62,17 @@ class QuizCreator extends Component {
             isFormValid: false,
             rightAnswerId: 1,
             formControls: createFormControl()
-
         })
     }
 
-    createQuizHandler = async (event) => {
+    createQuizHandler = event => {
         event.preventDefault()
-        try {
-            await axios.post('/quizes.json', this.state.quiz);
-            this.setState({
-                quiz: [],
-                isFormValid: false,
-                rightAnswerId: 1,
-                formControls: createFormControl()
-            })
-        } catch (e) {
-            console.log(e)
-        }
+        this.setState({
+            isFormValid: false,
+            rightAnswerId: 1,
+            formControls: createFormControl()
+        })
+        this.props.finishCreateQuiz()
     }
 
     changeHandler = (value, controlName) => {
@@ -177,7 +171,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         createQuizQuestion: item => dispatch(createQuizQuestion(item)),
-        finishCreateQuiz: () => dispatch(finishCreateQuiz)
+        finishCreateQuiz: () => dispatch(finishCreateQuiz())
     }
 }
 
